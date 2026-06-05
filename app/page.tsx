@@ -6,13 +6,17 @@ export default function Home() {
   const [roast, setRoast] = useState("");
   const parts = roast.split("---GLOW---");
   return (
-    <main>
-      <h1>Reume Roaster</h1>
+    <main className="min-h-screen bg-black flex flex-col items-center justify-center p-8">
+      <h1 className="text-5xl font-bold text-white mb-2">Resume Roaster</h1>
+      <p className="text-zinc-400 mb-12 text-lg">
+        Upload your resume. We'll make you cry, then make you better.
+      </p>
       {phase === "upload" && (
-        <div>
-          <p>upload your resume</p>
+        <div className="border-2 border-dashed border-zinc-600 rounded-xl p-12 text-center hover:border-orange-400 transition-colors cursor-pointer">
+          <p className="text-zinc-400 mb-4 text-sm">PDF files only</p>
           <input
             type="file"
+            accept=".pdf"
             onChange={async (e) => {
               setPhase("processing");
               if (e.target.files !== null) {
@@ -33,7 +37,15 @@ export default function Home() {
           />
         </div>
       )}
-      {phase === "processing" && <p>roasting in progress</p>}
+      {phase === "processing" && (
+        <div className="text-center">
+          <p className="text-6xl mb-6">🔥</p>
+          <p className="text-white text-2xl font-bold mb-2">
+            Roasting your resume...
+          </p>
+          <p className="text-zinc-400">This might sting a little</p>
+        </div>
+      )}
       {phase === "done" && (
         <div className="w-full max-w-2xl mx-auto mt-8">
           <div className="bg-zinc-900 rounded-xl p-6 mb-6">
