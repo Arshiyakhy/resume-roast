@@ -4,6 +4,7 @@ export default function Home() {
   const [phase, setPhase] = useState("upload");
   const [file, setFile] = useState<File | null>(null);
   const [roast, setRoast] = useState("");
+  const [error,setError] = useState("");
   const parts = roast.split("---GLOW---");
   return (
     <main className="min-h-screen bg-black flex flex-col items-center justify-center p-8">
@@ -11,7 +12,7 @@ export default function Home() {
       <p className="text-zinc-400 mb-12 text-lg">
         Upload your resume. We'll make you cry, then make you better.
       </p>
-      {phase === "upload" && (
+      {phase === "upload" && (<>
         <div className="border-2 border-dashed border-zinc-600 rounded-xl p-12 text-center hover:border-orange-400 transition-colors cursor-pointer">
           <p className="text-zinc-400 mb-4 text-sm">PDF files only</p>
           <input
@@ -31,11 +32,16 @@ export default function Home() {
               });
 
               const data = await res.json();
+              if(!res.ok){
+                setError(data.error)
+                setPhase("upload")
+                return 
+              }
               setRoast(data.result);
               setPhase("done");
             }}
           />
-        </div>
+        </div>{error && <p className="text-red-400 mt-4 text-sm">{error}</p>}</>
       )}
       {phase === "processing" && (
         <div className="text-center">
@@ -67,6 +73,7 @@ export default function Home() {
             onClick={() => {
               setPhase("upload");
               setRoast("");
+              setError("")
             }}
           >
             Roast another resume

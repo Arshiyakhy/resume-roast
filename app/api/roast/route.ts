@@ -1,10 +1,25 @@
 import Anthropic from "@anthropic-ai/sdk";
+import { kv } from "@vercel/kv";
 export async function POST(request: Request) {
   const formData = await request.formData();
   const file = formData.get("resume") as File;
+  const ip =
+    request.headers.get("x-forwarded-for") ||
+    request.headers.get("x-real-ip") ||
+    "unknown";
+  const today = new Date().toISOString().split("T")[0];
+  const key = `ratelimit:${ip}:${today}`;
+  const count = (await kv.get<number>(key)) || 0;
   if (file === null) {
     return Response.json({ error: "something went wrong" }, { status: 400 });
   }
+  if (count >= 3) {
+    return Response.json(
+      { error: "You've used your 3 daily roasts. Come back tomorrow!" },
+      { status: 429 },
+    );
+  }
+  await kv.set(key, count + 1, { ex: 86400 });
   const arrayBuffer = await file.arrayBuffer();
   const buffer = Buffer.from(arrayBuffer);
   const base64 = buffer.toString("base64");
