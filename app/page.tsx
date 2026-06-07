@@ -1,6 +1,6 @@
 "use client";
 import { useState } from "react";
-import TypingText from "./typingtext";
+import { default as TypingText } from "./typingtext"
 export default function Home() {
   const [phase, setPhase] = useState("upload");
   const [file, setFile] = useState<File | null>(null);
@@ -70,8 +70,8 @@ export default function Home() {
             <h2 className="text-green-600 text-xl font-bold mb-4">
               ✨ The Glow Up
             </h2>
-            <p className="text-zinc-800 leading-relaxed whitespace-pre-wrap">
-              {parts[1]}
+            <p className="text-zinc-800 leading-relaxed">
+              <TypingText text={parts[1]} speed={8} />
             </p>
           </div>
           <button
